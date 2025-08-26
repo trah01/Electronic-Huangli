@@ -153,7 +153,7 @@ app/src/main/java/com/trah/electronichuangli/
 
 **trah** - *项目创建者和主要开发者*
 
-- GitHub: [@trah](https://github.com/trah)
+- GitHub: [@trah](https://github.com/trah01)
 
 ## 🙏 致谢
 
