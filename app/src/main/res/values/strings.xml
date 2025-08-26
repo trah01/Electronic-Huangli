@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">电子黄历</string>
+    <string name="compass_title">电子黄历</string>
+    <string name="today_suitable">今日适宜</string>
+    <string name="today_unsuitable">今日不宜</string>
+    <string name="caishen_position">财神位于</string>
+    <string name="xishen_position">喜神位于</string>
+    <string name="fushen_position">福神位于</string>
+    <string name="developer_info">由trah开发 · 仅供个人学习</string>
+</resources>
