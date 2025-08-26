@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="20dp">
+        
+        <!-- 标题卡片 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@color/card_background">
+                
+                <!-- 顶部按钮栏 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginBottom="8dp">
+                    
+                    <ImageButton
+                        android:id="@+id/date_picker_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:src="@android:drawable/ic_menu_today"
+                        android:tint="@color/primary"
+                        android:contentDescription="选择日期"/>
+                    
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/compass_title"
+                        android:textStyle="bold"
+                        android:textSize="24sp"
+                        android:textColor="@color/text_primary"/>
+                    
+                    <ImageButton
+                        android:id="@+id/refresh_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:src="@android:drawable/ic_popup_sync"
+                        android:tint="@color/primary"
+                        android:contentDescription="刷新"/>
+                    
+                    <ImageButton
+                        android:id="@+id/share_button"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="?android:attr/selectableItemBackgroundBorderless"
+                        android:src="@android:drawable/ic_menu_share"
+                        android:tint="@color/primary"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="分享黄历"/>
+                </LinearLayout>
+                    
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=""
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="@color/text_secondary"
+                    android:id="@+id/dateTime"/>
+                    
+                <!-- 农历信息 -->
+                <TextView
+                    android:id="@+id/lunar_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="4dp"
+                    android:visibility="gone"/>
+                    
+                <TextView
+                    android:id="@+id/shengxiao"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginTop="2dp"
+                    android:visibility="gone"/>
+                    
+                <TextView
+                    android:id="@+id/jieqi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/accent"
+                    android:layout_marginTop="2dp"
+                    android:visibility="gone"/>
+                    
+                <TextView
+                    android:id="@+id/chongsha"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="14sp"
+                    android:textColor="@color/warning"
+                    android:layout_marginTop="2dp"
+                    android:visibility="gone"/>
+                    
+                <!-- 加载进度条 -->
+                <ProgressBar
+                    android:id="@+id/loading_progress"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 指南针卡片 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@color/white">
+                
+                <!-- 当前朝向显示 -->
+                <TextView
+                    android:id="@+id/compass_degree"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="北 0°"
+                    android:textSize="16sp"
+                    android:textColor="@color/text_secondary"
+                    android:gravity="center"
+                    android:layout_marginBottom="12dp"/>
+                
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/caishen_position"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="#E67E22"
+                            android:gravity="center_horizontal"/>
+                            
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textStyle="bold"
+                            android:textColor="@color/accent"
+                            android:textSize="18sp"
+                            android:id="@+id/caisen_fanwei"
+                            android:gravity="center_horizontal"
+                            android:layout_marginTop="4dp"/>
+
+                        <ImageView
+                            android:id="@+id/caishen_pointer"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/arrow"
+                            android:padding="8dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/xishen_position"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="#E74C3C"/>
+                            
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textStyle="bold"
+                            android:textColor="@color/accent"
+                            android:textSize="18sp"
+                            android:id="@+id/xishen_fanwei"
+                            android:gravity="center_horizontal"
+                            android:layout_marginTop="4dp"/>
+
+                        <ImageView
+                            android:id="@+id/xishen_pointer"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/arrow"
+                            android:padding="8dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/fushen_position"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:textColor="#27AE60"/>
+                            
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=""
+                            android:textStyle="bold"
+                            android:textColor="@color/accent"
+                            android:textSize="18sp"
+                            android:id="@+id/fushen_fanwei"
+                            android:gravity="center_horizontal"
+                            android:layout_marginTop="4dp"/>
+
+                        <ImageView
+                            android:id="@+id/fushen_pointer"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:layout_marginTop="8dp"
+                            android:src="@drawable/arrow"
+                            android:padding="8dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 今日适宜卡片 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="#E8F5E8">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/today_suitable"
+                    android:textColor="@color/success"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="12dp"/>
+                    
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/yi"
+                    android:gravity="center"
+                    android:textColor="@color/text_primary"
+                    android:lineSpacingExtra="4dp"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 今日不宜卡片 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="#FFF8E1">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/today_unsuitable"
+                    android:textColor="@color/warning"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="12dp"/>
+                    
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ji"
+                    android:gravity="center"
+                    android:textColor="@color/text_primary"
+                    android:lineSpacingExtra="4dp"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 五行时辰卡片 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@color/card_background">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="五行时辰"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="12dp"/>
+                    
+                <TextView
+                    android:id="@+id/wuxing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="8dp"
+                    android:lineSpacingExtra="3dp"
+                    android:visibility="gone"/>
+                    
+                <TextView
+                    android:id="@+id/shichen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="3dp"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 个人运势卡片 -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="#F0F8FF">
+                
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="个人运势分析"
+                    android:textColor="@color/text_primary"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="12dp"/>
+                    
+                <TextView
+                    android:id="@+id/personal_luck"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textColor="@color/text_primary"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="设置个人生辰信息后将显示个性化运势分析"
+                    android:visibility="visible"/>
+                    
+                <!-- 详细运势分析 -->
+                <TextView
+                    android:id="@+id/detailed_fortune"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="6dp"
+                    android:layout_marginTop="15dp"
+                    android:padding="15dp"
+                    android:background="#F8F9FA"
+                    android:visibility="gone"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- 个人设置按钮 -->
+        <Button
+            android:id="@+id/personal_setting_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="个人生辰设置"
+            android:textColor="@color/white"
+            android:background="@drawable/custom_button_selector"
+            android:layout_marginBottom="10dp"
+            android:padding="16dp"
+            android:drawableStart="@android:drawable/ic_menu_manage"
+            android:drawableTint="@color/white"
+            android:drawablePadding="8dp"
+            android:textAllCaps="false"
+            android:elevation="2dp"
+            android:stateListAnimator="@null"/>
+
+        <!-- 择日功能按钮 -->
+        <Button
+            android:id="@+id/date_selection_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="择日查询"
+            android:textColor="@color/white"
+            android:background="@drawable/auspicious_button_selector"
+            android:layout_marginBottom="15dp"
+            android:padding="16dp"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:drawableTint="@color/white"
+            android:drawablePadding="8dp"
+            android:textAllCaps="false"
+            android:elevation="2dp"
+            android:stateListAnimator="@null"/>
+
+        <!-- 开发者信息 -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/developer_info"
+            android:textSize="11sp"
+            android:textColor="@color/text_secondary"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
+
+    </LinearLayout>
+</ScrollView>
