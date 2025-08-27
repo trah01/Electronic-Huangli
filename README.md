@@ -1,10 +1,10 @@
 # 电子黄历 (Electronic Huangli)
 
 [![API](https://img.shields.io/badge/API-31%2B-brightgreen.svg)](https://android-arsenal.com/api?level=31)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg)](LICENSE)
 [![Language](https://img.shields.io/badge/Language-Java-orange.svg)](https://www.oracle.com/java/)
 
-一个功能丰富的Android黄历应用，提供传统黄历查询、方位指南针、择日功能和个人运势分析。
+一个功能丰富的Android黄历应用，提供传统黄历查询、方位指南针、择日功能、个人运势分析和易经卜卦。
 
 ## 📱 功能特色
 
@@ -20,6 +20,13 @@
 - **节气信息**：二十四节气和传统节日显示
 - **生肖运势**：当日生肖信息和运势提示
 - **五行时辰**：五行属性和时辰吉凶分析
+
+### 🔮 易经卜卦
+- **真随机数生成**：结合多种硬件熵源(触摸、传感器、系统时间)
+- **实时随机展示**：可视化显示随机数据收集过程
+- **传统64卦体系**：完整的六十四卦易经体系
+- **现代化解释**：传统卦辞配合现代运势解析
+- **多维分析**：事业、财运、感情、健康全方位运势分析
 
 ### 🗓️ 择日功能
 - **多事件类型**：支持结婚嫁娶、搬家入宅、开业开市等9种常见事件
@@ -44,7 +51,8 @@
 - **工具类封装**：统一的常量管理和工具类设计
 
 ### 核心技术
-- **传感器集成**：加速度计+磁力计实现精确方位计算
+- **传感器集成**：加速度计+磁力计+陀螺仪实现精确方位计算
+- **多源随机数生成**：结合硬件传感器、触摸交互、系统时间的密码级随机数
 - **农历计算**：集成lunar-java库实现离线农历计算
 - **Material Design 3**：遵循最新Material设计规范
 - **数据持久化**：SharedPreferences存储用户个人设置
@@ -80,7 +88,7 @@ dependencies {
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/[your-username]/Electronic-Huangli.git
+git clone https://github.com/trah01/Electronic-Huangli.git
 cd Electronic-Huangli
 ```
 
@@ -98,32 +106,58 @@ cd Electronic-Huangli
 ```xml
 <!-- 传感器权限 -->
 <uses-feature android:name="android.hardware.sensor.compass" android:required="true" />
+<uses-permission android:name="android.permission.HIGH_SAMPLING_RATE_SENSORS" />
 <!-- 网络权限（用于未来扩展） -->
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
 ## 📱 应用截图
 
-| 首页指南针 | 择日功能 | 个人设置 |
-|---|---|---|
-| ![Home](screenshots/home.jpg) | ![Auspicious](screenshots/auspicious.jpg) | ![Personal](screenshots/personal.jpg) |
+| 首页指南针 | 择日功能 | 卜卦功能 | 个人设置 |
+|---|---|---|---|
+| ![Home](screenshots/home.jpg) | ![Auspicious](screenshots/auspicious.jpg) | ![Divination](screenshots/divination.jpg) | ![Personal](screenshots/personal.jpg) |
 
 ## 🗂️ 项目结构
 
 ```
 app/src/main/java/com/trah/electronichuangli/
-├── constants/           # 常量定义
+├── constants/              # 常量定义
 │   └── AppConstants.java
-├── utils/              # 工具类
-│   ├── CompassUtils.java      # 指南针工具
-│   ├── PersonalInfoUtils.java # 个人信息工具  
-│   └── UIUtils.java           # UI工具
-├── MainActivity.java          # 主Activity
-├── HomeFragment.java          # 首页Fragment
-├── AuspiciousFragment.java    # 择日Fragment
-├── PersonalFragment.java      # 个人Fragment
-└── LunarHelper.java          # 农历计算助手
+├── utils/                  # 工具类
+│   ├── CompassUtils.java           # 指南针工具
+│   ├── PersonalInfoUtils.java      # 个人信息工具  
+│   ├── UIUtils.java                # UI工具
+│   ├── TrueRandomGenerator.java    # 真随机数生成器
+│   ├── DivinationUtils.java        # 卜卦算法工具
+│   └── DivinationResult.java       # 卜卦结果模型
+├── MainActivity.java               # 主Activity
+├── HomeFragment.java               # 首页Fragment
+├── AuspiciousFragment.java         # 择日Fragment
+├── DivinationFragment.java         # 卜卦Fragment
+├── PersonalFragment.java           # 个人Fragment
+└── LunarHelper.java               # 农历计算助手
 ```
+
+## 🔮 卜卦算法说明
+
+### 随机数生成机制
+1. **多源熵收集**：同时采集以下随机源
+   - 用户触摸坐标和滑动速度
+   - 加速度计三轴数据
+   - 陀螺仪三轴数据
+   - 磁场传感器三轴数据
+   - 系统纳秒级时间戳
+   - Android SecureRandom
+
+2. **种子合并算法**：收集30个随机种子通过复杂位运算合并
+3. **六爻生成**：使用合并种子生成6个随机数对应六爻
+4. **卦象计算**：按传统易经算法转换为64卦之一
+
+### 传统易经体系
+- 完整64卦数据库(乾、坤、屯、蒙...)
+- 传统卦辞和象辞
+- 现代化运势解释
+- 吉凶判断和建议
 
 ## 🤝 贡献指南
 
@@ -136,6 +170,12 @@ app/src/main/java/com/trah/electronichuangli/
 5. 开启Pull Request
 
 ## 📝 更新日志
+
+### v1.1.0 (2025-08-27)
+- ✨ 新增易经卜卦功能
+- 🔮 多熵源真随机数生成
+- 📊 实时随机数据可视化
+- 🎯 完整64卦体系和现代解释
 
 ### v1.0.0 (2025-08-26)
 - ✨ 首次发布
@@ -153,7 +193,7 @@ app/src/main/java/com/trah/electronichuangli/
 
 **trah** - *项目创建者和主要开发者*
 
-- GitHub: [@trah](https://github.com/trah01)
+- GitHub: [@trah01](https://github.com/trah01)
 
 ## 🙏 致谢
 
