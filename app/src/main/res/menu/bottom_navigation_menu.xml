@@ -14,4 +14,9 @@
         android:id="@+id/nav_personal"
         android:icon="@android:drawable/ic_menu_myplaces"
         android:title="个人" />
+    
+    <item
+        android:id="@+id/nav_divination"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="卜卦" />
 </menu>

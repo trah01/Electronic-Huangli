@@ -24,6 +24,8 @@ import java.util.List;
 // ==================== 项目内部导入 ====================
 import com.trah.electronichuangli.constants.AppConstants;
 import com.trah.electronichuangli.utils.PersonalInfoUtils;
+import com.trah.electronichuangli.utils.FortuneData;
+import com.trah.electronichuangli.utils.FortuneCalculator;
 
 /**
  * 个人信息Fragment
@@ -271,19 +273,148 @@ public class PersonalFragment extends Fragment {
      * @return 格式化的运势分析文本
      */
     private String generatePersonalFortune(PersonalInfoUtils.BirthInfo birthInfo) {
+        if (birthInfo == null) {
+            return "请先设置个人生辰信息以获取个性化运势分析";
+        }
+        
+        try {
+            // 使用FortuneCalculator计算真实运势
+            FortuneData fortuneData = FortuneCalculator.calculateTodayFortune(birthInfo);
+            
+            if (fortuneData != null) {
+                // 使用FortuneData的格式化方法生成完整运势文本
+                return fortuneData.getFormattedFortuneText();
+            } else {
+                // 如果计算失败，返回基础运势信息
+                return generateBasicFortune(birthInfo);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            // 出错时返回基础运势信息
+            return generateBasicFortune(birthInfo);
+        }
+    }
+    
+    /**
+     * 生成基础运势信息（作为备用方案）
+     * @param birthInfo 生辰信息
+     * @return 基础运势分析文本
+     */
+    private String generateBasicFortune(PersonalInfoUtils.BirthInfo birthInfo) {
         StringBuilder fortune = new StringBuilder();
         fortune.append("【今日运势分析】\n\n");
-        fortune.append("财运：★★★★☆ 财运亨通，适合投资理财\n");
-        fortune.append("事业：★★★☆☆ 工作平稳，需要耐心等待时机\n");
-        fortune.append("感情：★★★★★ 桃花运旺盛，单身者有望遇到良缘\n");
-        fortune.append("健康：★★★☆☆ 注意饮食规律，避免熬夜\n\n");
+        
+        // 根据生辰时间简单调整运势
+        String birthTime = birthInfo.getSimpleBirthTime();
+        int timeModifier = getBirthTimeModifier(birthTime);
+        
+        // 基础运势评分（2-5星）
+        int baseScore = 3;
+        int wealthScore = Math.max(1, Math.min(5, baseScore + timeModifier));
+        int careerScore = Math.max(1, Math.min(5, baseScore + (timeModifier + 1) % 3 - 1));
+        int loveScore = Math.max(1, Math.min(5, baseScore + (timeModifier + 2) % 3 - 1));
+        int healthScore = Math.max(1, Math.min(5, baseScore + (timeModifier + 3) % 3 - 1));
+        
+        fortune.append("财运：").append(FortuneData.getStarString(wealthScore)).append(" ");
+        fortune.append(getFortuneDesc(wealthScore, "财运")).append("\n");
+        
+        fortune.append("事业：").append(FortuneData.getStarString(careerScore)).append(" ");
+        fortune.append(getFortuneDesc(careerScore, "事业")).append("\n");
+        
+        fortune.append("感情：").append(FortuneData.getStarString(loveScore)).append(" ");
+        fortune.append(getFortuneDesc(loveScore, "感情")).append("\n");
+        
+        fortune.append("健康：").append(FortuneData.getStarString(healthScore)).append(" ");
+        fortune.append(getFortuneDesc(healthScore, "健康")).append("\n\n");
+        
         fortune.append("【开运建议】\n");
-        fortune.append("吉色：红色、紫色\n");
-        fortune.append("吉数：3、8\n");
-        fortune.append("吉时：").append(birthInfo.getSimpleBirthTime()).append("时\n");
-        fortune.append("贵人方位：东南方");
+        fortune.append("吉色：根据您的").append(birthTime).append("出生，建议今日多穿暖色系\n");
+        fortune.append("吉数：").append((birthInfo.getBirthDay() % 9) + 1).append("、").append((birthInfo.getBirthMonth() % 9) + 1).append("\n");
+        fortune.append("吉时：").append(birthTime).append("\n");
+        fortune.append("贵人方位：根据您的生辰推算为东南方");
         
         return fortune.toString();
+    }
+    
+    /**
+     * 根据出生时辰获取运势调节因子
+     */
+    private int getBirthTimeModifier(String birthTime) {
+        switch (birthTime) {
+            case "子时": case "午时": return 1;  // 阳气最盛时辰
+            case "卯时": case "酉时": return 0;  // 平衡时辰
+            case "寅时": case "申时": return 2;  // 变化时辰
+            case "辰时": case "戌时": return -1; // 土气时辰
+            case "巳时": case "亥时": return 1;  // 火水时辰
+            case "丑时": case "未时": return 0;  // 土气时辰
+            default: return 0;
+        }
+    }
+    
+    /**
+     * 根据评分获取运势描述
+     */
+    private String getFortuneDesc(int score, String type) {
+        String[] levels = {"低迷", "欠佳", "平稳", "良好", "极佳"};
+        String level = levels[Math.max(0, Math.min(4, score - 1))];
+        
+        switch (type) {
+            case "财运":
+                return "财运" + level + "，" + getWealthAdvice(score);
+            case "事业":
+                return "事业运" + level + "，" + getCareerAdvice(score);
+            case "感情":
+                return "感情运" + level + "，" + getLoveAdvice(score);
+            case "健康":
+                return "健康运" + level + "，" + getHealthAdvice(score);
+            default:
+                return "运势" + level;
+        }
+    }
+    
+    private String getWealthAdvice(int score) {
+        switch (score) {
+            case 1: return "谨慎理财，避免大额支出";
+            case 2: return "保守投资，量入为出";
+            case 3: return "收支平衡，可小额理财";
+            case 4: return "有进账机会，适合投资";
+            case 5: return "财源广进，投资理财皆宜";
+            default: return "按计划理财";
+        }
+    }
+    
+    private String getCareerAdvice(int score) {
+        switch (score) {
+            case 1: return "工作压力大，需低调行事";
+            case 2: return "工作平淡，需要耐心";
+            case 3: return "工作顺利，按部就班";
+            case 4: return "工作得力，有晋升机会";
+            case 5: return "事业蒸蒸日上，大展宏图";
+            default: return "专注工作目标";
+        }
+    }
+    
+    private String getLoveAdvice(int score) {
+        switch (score) {
+            case 1: return "感情需要更多沟通理解";
+            case 2: return "感情需要用心经营";
+            case 3: return "感情稳定，平淡见真情";
+            case 4: return "感情甜蜜，单身者易遇良缘";
+            case 5: return "爱情美满，有喜事临门";
+            default: return "珍惜身边的感情";
+        }
+    }
+    
+    private String getHealthAdvice(int score) {
+        switch (score) {
+            case 1: return "注意休息调养";
+            case 2: return "注意劳逸结合";
+            case 3: return "保持规律作息";
+            case 4: return "精力充沛，适合运动";
+            case 5: return "身心健康，精神饱满";
+            default: return "注意身体健康";
+        }
     }
     
     /**

@@ -3,9 +3,13 @@ package com.trah.electronichuangli;
 // 6tail lunar-java库的正确导入
 import com.nlf.calendar.Lunar;
 import com.nlf.calendar.Solar;
+import com.nlf.calendar.EightChar;
 import org.json.JSONObject;
 import java.util.Calendar;
 import java.util.List;
+import com.trah.electronichuangli.utils.FortuneData;
+import com.trah.electronichuangli.utils.FortuneCalculator;
+import com.trah.electronichuangli.utils.PersonalInfoUtils;
 
 /**
  * 使用6tail/lunar-java库提供黄历功能的帮助类
@@ -384,6 +388,222 @@ public class LunarHelper {
             case "戌": return "狗";
             case "亥": return "猪";
             default: return dizhi; // 如果不匹配就返回原值
+        }
+    }
+    
+    // ==================== 八字和个人运势相关功能 ====================
+    
+    /**
+     * 获取指定生辰的八字信息
+     * @param birthInfo 生辰信息
+     * @return 八字信息字符串
+     */
+    public static String getBaziInfo(PersonalInfoUtils.BirthInfo birthInfo) {
+        if (birthInfo == null) {
+            return "未设置生辰信息";
+        }
+        
+        try {
+            // 获取出生时间对应的小时数
+            int birthHour = getBirthHourFromTime(birthInfo.getSimpleBirthTime());
+            
+            // 创建出生时间的Solar对象
+            Solar birthSolar = new Solar(birthInfo.getBirthYear(), 
+                                       birthInfo.getBirthMonth(), 
+                                       birthInfo.getBirthDay(), 
+                                       birthHour, 0, 0);
+            
+            Lunar birthLunar = birthSolar.getLunar();
+            EightChar eightChar = birthLunar.getEightChar();
+            
+            return String.format("八字：%s %s %s %s", 
+                eightChar.getYear(), eightChar.getMonth(), 
+                eightChar.getDay(), eightChar.getTime());
+                
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "八字计算错误";
+        }
+    }
+    
+    /**
+     * 根据时辰名称获取对应的小时数
+     */
+    private static int getBirthHourFromTime(String timeName) {
+        switch (timeName) {
+            case "子时": return 0;
+            case "丑时": return 2;  
+            case "寅时": return 4;
+            case "卯时": return 6;
+            case "辰时": return 8;
+            case "巳时": return 10;
+            case "午时": return 12;
+            case "未时": return 14;
+            case "申时": return 16;
+            case "酉时": return 18;
+            case "戌时": return 20;
+            case "亥时": return 22;
+            default: return 0;
+        }
+    }
+    
+    /**
+     * 计算五行平衡信息
+     * @param birthInfo 生辰信息
+     * @return 五行平衡描述
+     */
+    public static String getWuxingBalance(PersonalInfoUtils.BirthInfo birthInfo) {
+        if (birthInfo == null) {
+            return "未设置生辰信息";
+        }
+        
+        try {
+            int birthHour = getBirthHourFromTime(birthInfo.getSimpleBirthTime());
+            Solar birthSolar = new Solar(birthInfo.getBirthYear(), 
+                                       birthInfo.getBirthMonth(), 
+                                       birthInfo.getBirthDay(), 
+                                       birthHour, 0, 0);
+            
+            Lunar birthLunar = birthSolar.getLunar();
+            EightChar eightChar = birthLunar.getEightChar();
+            
+            // 获取日主五行
+            String dayGan = eightChar.getDay().substring(0, 1);
+            String dayWuxing = getGanWuxing(dayGan);
+            
+            return String.format("日主属%s，五行需要%s来调和", dayWuxing, getHelperElement(dayWuxing));
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "五行计算错误";
+        }
+    }
+    
+    /**
+     * 获取天干对应的五行
+     */
+    private static String getGanWuxing(String gan) {
+        switch (gan) {
+            case "甲": case "乙": return "木";
+            case "丙": case "丁": return "火";
+            case "戊": case "己": return "土";
+            case "庚": case "辛": return "金";
+            case "壬": case "癸": return "水";
+            default: return "未知";
+        }
+    }
+    
+    /**
+     * 获取辅助五行元素
+     */
+    private static String getHelperElement(String mainElement) {
+        switch (mainElement) {
+            case "木": return "水";
+            case "火": return "木";
+            case "土": return "火";
+            case "金": return "土";
+            case "水": return "金";
+            default: return "平衡";
+        }
+    }
+    
+    /**
+     * 获取今日个人运势
+     * @param birthInfo 生辰信息
+     * @return FortuneData 运势数据对象
+     */
+    public static FortuneData getTodayPersonalFortune(PersonalInfoUtils.BirthInfo birthInfo) {
+        return FortuneCalculator.calculateTodayFortune(birthInfo);
+    }
+    
+    /**
+     * 根据个人八字获取今日宜忌建议
+     * @param birthInfo 生辰信息
+     * @return 个性化宜忌建议
+     */
+    public static String getPersonalYiJi(PersonalInfoUtils.BirthInfo birthInfo) {
+        if (birthInfo == null) {
+            return "请先设置个人生辰信息";
+        }
+        
+        try {
+            // 获取今日黄历信息
+            Calendar today = Calendar.getInstance();
+            JSONObject huangliData = getHuangLiData(
+                today.get(Calendar.YEAR),
+                today.get(Calendar.MONTH) + 1,
+                today.get(Calendar.DAY_OF_MONTH)
+            );
+            
+            if (huangliData == null) {
+                return "黄历数据获取失败";
+            }
+            
+            // 获取基础宜忌
+            String basicYi = huangliData.optString("yi", "");
+            String basicJi = huangliData.optString("ji", "");
+            
+            // 根据个人八字调整建议
+            String personalAdvice = getPersonalizedAdvice(birthInfo);
+            
+            StringBuilder result = new StringBuilder();
+            result.append("【今日宜忌】\n");
+            result.append("宜：").append(basicYi.replace("[", "").replace("]", "")).append("\n");
+            result.append("忌：").append(basicJi.replace("[", "").replace("]", "")).append("\n\n");
+            result.append("【个人建议】\n").append(personalAdvice);
+            
+            return result.toString();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "个性化建议生成失败";
+        }
+    }
+    
+    /**
+     * 根据生辰信息生成个性化建议
+     */
+    private static String getPersonalizedAdvice(PersonalInfoUtils.BirthInfo birthInfo) {
+        try {
+            // 获取生肖
+            Solar birthSolar = new Solar(birthInfo.getBirthYear(), 
+                                       birthInfo.getBirthMonth(), 
+                                       birthInfo.getBirthDay());
+            Lunar birthLunar = birthSolar.getLunar();
+            String shengxiao = birthLunar.getYearShengXiao();
+            
+            // 根据生肖给出建议
+            switch (shengxiao) {
+                case "鼠":
+                    return "属鼠者今日宜早起，利于财运和事业发展";
+                case "牛":
+                    return "属牛者今日宜稳扎稳打，避免冒险决策";
+                case "虎":
+                    return "属虎者今日精力旺盛，适合处理重要事务";
+                case "兔":
+                    return "属兔者今日宜静不宜动，多思考少行动";
+                case "龙":
+                    return "属龙者今日贵人运佳，多与人交流合作";
+                case "蛇":
+                    return "属蛇者今日直觉敏锐，适合投资理财";
+                case "马":
+                    return "属马者今日行动力强，适合出行办事";
+                case "羊":
+                    return "属羊者今日人缘佳，适合社交活动";
+                case "猴":
+                    return "属猴者今日思维活跃，适合创新工作";
+                case "鸡":
+                    return "属鸡者今日注意力集中，适合学习进修";
+                case "狗":
+                    return "属狗者今日忠诚可靠，适合团队合作";
+                case "猪":
+                    return "属猪者今日心情愉悦，适合享受生活";
+                default:
+                    return "今日宜顺应自然，保持平常心";
+            }
+            
+        } catch (Exception e) {
+            return "根据您的生辰，建议今日保持积极心态";
         }
     }
 }

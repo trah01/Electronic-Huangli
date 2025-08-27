@@ -3,6 +3,7 @@ package com.trah.electronichuangli;
 // ==================== Android Framework 导入 ====================
 import static com.trah.electronichuangli.constants.AppConstants.COMPASS_PRECISION_THRESHOLD;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -99,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // 强制使用亮色主题，禁用暗色模式
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_new);
         configureStatusBar();
@@ -125,6 +129,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 fragment = new AuspiciousFragment();
             } else if (item.getItemId() == R.id.nav_personal) {
                 fragment = new PersonalFragment();
+            } else if (item.getItemId() == R.id.nav_divination) {
+                fragment = new DivinationFragment();
             }
             
             if (fragment != null) {
