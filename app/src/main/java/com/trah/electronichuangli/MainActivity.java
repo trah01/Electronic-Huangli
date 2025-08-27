@@ -79,6 +79,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private ImageButton datePickerButton, shareButton;
     private Button personalSettingButton;
     
+    // ==================== Fragment管理 ====================
+    private HomeFragment homeFragment;
+    private AuspiciousFragment auspiciousFragment;
+    private PersonalFragment personalFragment;
+    private DivinationFragment divinationFragment;
+    private Fragment currentFragment;
+    
     // ==================== 数据相关 ====================
     private Calendar selectedDate;
     private PersonalInfoUtils.BirthInfo birthInfo;
@@ -112,7 +119,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         
         // 默认显示首页
         if (savedInstanceState == null) {
-            loadFragment(new HomeFragment());
+            homeFragment = new HomeFragment();
+            showFragment(homeFragment);
         }
     }
 
@@ -124,28 +132,54 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         bottomNavigation.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             if (item.getItemId() == R.id.nav_home) {
-                fragment = new HomeFragment();
+                if (homeFragment == null) {
+                    homeFragment = new HomeFragment();
+                }
+                fragment = homeFragment;
             } else if (item.getItemId() == R.id.nav_auspicious) {
-                fragment = new AuspiciousFragment();
+                if (auspiciousFragment == null) {
+                    auspiciousFragment = new AuspiciousFragment();
+                }
+                fragment = auspiciousFragment;
             } else if (item.getItemId() == R.id.nav_personal) {
-                fragment = new PersonalFragment();
+                if (personalFragment == null) {
+                    personalFragment = new PersonalFragment();
+                }
+                fragment = personalFragment;
             } else if (item.getItemId() == R.id.nav_divination) {
-                fragment = new DivinationFragment();
+                if (divinationFragment == null) {
+                    divinationFragment = new DivinationFragment();
+                }
+                fragment = divinationFragment;
             }
             
             if (fragment != null) {
-                loadFragment(fragment);
+                showFragment(fragment);
             }
             return true;
         });
     }
     
     /**
-     * 加载Fragment
+     * 显示Fragment（使用add/hide/show方式保持状态）
      */
-    private void loadFragment(Fragment fragment) {
+    private void showFragment(Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+        
+        // 隐藏当前Fragment
+        if (currentFragment != null) {
+            transaction.hide(currentFragment);
+        }
+        
+        // 如果Fragment还没有被添加，则添加它
+        if (!fragment.isAdded()) {
+            transaction.add(R.id.fragment_container, fragment);
+        } else {
+            // 如果已经添加，则显示它
+            transaction.show(fragment);
+        }
+        
+        currentFragment = fragment;
         transaction.commit();
     }
     

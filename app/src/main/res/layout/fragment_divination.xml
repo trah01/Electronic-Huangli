@@ -42,7 +42,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="在心中默念想要卜卦的事，然后滑动区域惊醒卜卦。"
+                    android:text="需在心中默念想要卜卦的事，进行卜卦。"
                     android:textSize="12sp"
                     android:textColor="@color/text_secondary"
                     android:gravity="center"/>
@@ -542,69 +542,6 @@
                     android:textSize="14sp"
                     android:textColor="@color/text_secondary"
                     android:lineSpacingExtra="4dp"/>
-
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- 各方面运势卡片 -->
-        <LinearLayout
-            android:id="@+id/layout_fortune_aspects"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:background="@android:color/white"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="各方面运势"
-                    android:textSize="16sp"
-                    android:textColor="@color/text_primary"
-                    android:gravity="center"
-                    android:layout_marginBottom="12dp"/>
-
-                <TextView
-                    android:id="@+id/tv_career_fortune"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="事业："
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginBottom="6dp"/>
-
-                <TextView
-                    android:id="@+id/tv_wealth_fortune"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="财运："
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginBottom="6dp"/>
-
-                <TextView
-                    android:id="@+id/tv_love_fortune"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="感情："
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_marginBottom="6dp"/>
-
-                <TextView
-                    android:id="@+id/tv_health_fortune"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="健康："
-                    android:textSize="13sp"
-                    android:textColor="@color/text_secondary"/>
 
             </LinearLayout>
         </LinearLayout>

@@ -45,7 +45,6 @@ public class DivinationFragment extends Fragment implements TrueRandomGenerator.
     // 卜卦结果显示组件
     private LinearLayout layoutDivinationResult;
     private LinearLayout layoutGuaInterpretation;
-    private LinearLayout layoutFortuneAspects;
     private LinearLayout layoutNewDivination;
     private TextView tvGuaSymbol;
     private TextView tvGuaName;
@@ -54,10 +53,6 @@ public class DivinationFragment extends Fragment implements TrueRandomGenerator.
     private TextView tvGuaCi;
     private TextView tvModernInterpretation;
     private TextView tvAdvice;
-    private TextView tvCareerFortune;
-    private TextView tvWealthFortune;
-    private TextView tvLoveFortune;
-    private TextView tvHealthFortune;
     
     // ==================== 核心组件 ====================
     private TrueRandomGenerator randomGenerator;
@@ -124,7 +119,6 @@ public class DivinationFragment extends Fragment implements TrueRandomGenerator.
         // 卜卦结果显示组件
         layoutDivinationResult = view.findViewById(R.id.layout_divination_result);
         layoutGuaInterpretation = view.findViewById(R.id.layout_gua_interpretation);
-        layoutFortuneAspects = view.findViewById(R.id.layout_fortune_aspects);
         layoutNewDivination = view.findViewById(R.id.layout_new_divination);
         tvGuaSymbol = view.findViewById(R.id.tv_gua_symbol);
         tvGuaName = view.findViewById(R.id.tv_gua_name);
@@ -133,10 +127,6 @@ public class DivinationFragment extends Fragment implements TrueRandomGenerator.
         tvGuaCi = view.findViewById(R.id.tv_gua_ci);
         tvModernInterpretation = view.findViewById(R.id.tv_modern_interpretation);
         tvAdvice = view.findViewById(R.id.tv_advice);
-        tvCareerFortune = view.findViewById(R.id.tv_career_fortune);
-        tvWealthFortune = view.findViewById(R.id.tv_wealth_fortune);
-        tvLoveFortune = view.findViewById(R.id.tv_love_fortune);
-        tvHealthFortune = view.findViewById(R.id.tv_health_fortune);
     }
     
     private void initializeRandomGenerator() {
@@ -250,7 +240,6 @@ public class DivinationFragment extends Fragment implements TrueRandomGenerator.
             // 隐藏之前的卜卦结果
             layoutDivinationResult.setVisibility(View.GONE);
             layoutGuaInterpretation.setVisibility(View.GONE);
-            layoutFortuneAspects.setVisibility(View.GONE);
             layoutNewDivination.setVisibility(View.GONE);
         }
     }
@@ -278,7 +267,6 @@ public class DivinationFragment extends Fragment implements TrueRandomGenerator.
         resetCollection();
         layoutDivinationResult.setVisibility(View.GONE);
         layoutGuaInterpretation.setVisibility(View.GONE);
-        layoutFortuneAspects.setVisibility(View.GONE);
         layoutNewDivination.setVisibility(View.GONE);
     }
     
@@ -306,19 +294,9 @@ public class DivinationFragment extends Fragment implements TrueRandomGenerator.
         // 显示建议
         tvAdvice.setText(result.getAdvice());
         
-        // 显示各方面运势
-        String[] aspects = result.getAspects();
-        if (aspects != null && aspects.length >= 4) {
-            tvCareerFortune.setText(aspects[0]);
-            tvWealthFortune.setText(aspects[1]);
-            tvLoveFortune.setText(aspects[2]);
-            tvHealthFortune.setText(aspects[3]);
-        }
-        
         // 显示结果区域
         layoutDivinationResult.setVisibility(View.VISIBLE);
         layoutGuaInterpretation.setVisibility(View.VISIBLE);
-        layoutFortuneAspects.setVisibility(View.VISIBLE);
         layoutNewDivination.setVisibility(View.VISIBLE);
     }
     

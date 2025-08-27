@@ -189,7 +189,7 @@ public class PersonalFragment extends Fragment {
             }
         } else {
             // 默认设置为30年前的今天
-            selectedBirthDate.add(Calendar.YEAR, -30);
+            selectedBirthDate.add(Calendar.YEAR, -25);
             dateButton.setText(String.format("%d年%d月%d日",
                 selectedBirthDate.get(Calendar.YEAR),
                 selectedBirthDate.get(Calendar.MONTH) + 1,
